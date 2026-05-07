@@ -99,7 +99,7 @@ func (c *Config) Validate() error {
 		if c.Database == "" {
 			return fmt.Errorf("database name is required")
 		}
-		if c.Type != "mysql" && c.Type != "sqlserver" {
+		if c.Type != "mysql" && c.Type != "sqlserver" && c.Type != "postgres" {
 			return fmt.Errorf("unsupported database type: %s", c.Type)
 		}
 	} else {
@@ -119,7 +119,7 @@ func (c *Config) Validate() error {
 			if conn.Database == "" {
 				return fmt.Errorf("database name is required for connection %s", name)
 			}
-			if conn.Type != "mysql" && conn.Type != "sqlserver" {
+			if conn.Type != "mysql" && conn.Type != "sqlserver" && conn.Type != "postgres" {
 				return fmt.Errorf("unsupported database type for connection %s: %s", name, conn.Type)
 			}
 		}
@@ -182,6 +182,8 @@ func defaultPort(dbType string) int {
 		return 3306
 	case "sqlserver":
 		return 1433
+	case "postgres":
+		return 5432
 	default:
 		return 0
 	}

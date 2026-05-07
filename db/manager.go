@@ -83,14 +83,20 @@ func (m *Manager) GetDefaultConnection() (Database, error) {
 	return nil, fmt.Errorf("default connection not found")
 }
 
-// ListConnections lists all configured connection names
-func (m *Manager) ListConnections() []string {
+// ConnectionInfo holds the name and type of a configured connection
+type ConnectionInfo struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
+
+// ListConnections lists all configured connections with their types
+func (m *Manager) ListConnections() []ConnectionInfo {
 	conns := m.config.GetConnections()
-	names := make([]string, 0, len(conns))
-	for name := range conns {
-		names = append(names, name)
+	result := make([]ConnectionInfo, 0, len(conns))
+	for name, cfg := range conns {
+		result = append(result, ConnectionInfo{Name: name, Type: cfg.Type})
 	}
-	return names
+	return result
 }
 
 // CloseAll closes all open database connections

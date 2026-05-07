@@ -46,6 +46,8 @@ func NewDatabase(dbType, host string, port int, username, password, database str
 		return NewMySQLDatabase(host, port, username, password, database), nil
 	case "sqlserver":
 		return NewSQLServerDatabase(host, port, username, password, database), nil
+	case "postgres":
+		return NewPostgresDatabase(host, port, username, password, database), nil
 	default:
 		return nil, fmt.Errorf("unsupported database type: %s", dbType)
 	}
