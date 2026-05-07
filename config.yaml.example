@@ -1,0 +1,24 @@
+# Example 1: Single database mode (uncomment to use)
+# type: mysql
+# host: localhost
+# port: 3306
+# username: root
+# password: your_password
+# database: mydb
+
+# Example 2: Multi database mode (uncomment to use)
+# connections:
+#   dev:
+#     type: mysql
+#     host: localhost
+#     port: 3306
+#     username: dev_user
+#     password: dev_pass
+#     database: dev_db
+#   prod:
+#     type: sqlserver
+#     host: prod-db.example.com
+#     port: 1433
+#     username: prod_user
+#     password: prod_pass
+#     database: prod_db
