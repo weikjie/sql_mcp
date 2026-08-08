@@ -52,6 +52,7 @@ func (m *Manager) GetConnection(name string) (Database, error) {
 		connConfig.Username,
 		connConfig.Password,
 		connConfig.Database,
+		connConfig.File,
 	)
 	if err != nil {
 		return nil, err

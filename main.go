@@ -49,7 +49,7 @@ func main() {
 	// Try to connect to default database to verify configuration
 	if defaultConn, err := cfg.GetDefaultConnection(); err == nil {
 		fmt.Fprintf(os.Stderr, "🔗 Testing database connection...\n")
-		testDB, err := db.NewDatabase(defaultConn.Type, defaultConn.Host, defaultConn.Port, defaultConn.Username, defaultConn.Password, defaultConn.Database)
+		testDB, err := db.NewDatabase(defaultConn.Type, defaultConn.Host, defaultConn.Port, defaultConn.Username, defaultConn.Password, defaultConn.Database, defaultConn.File)
 		if err == nil {
 			if err := testDB.Connect(); err == nil {
 				fmt.Fprintln(os.Stderr, "✅ Database connection successful")
