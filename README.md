@@ -1,12 +1,12 @@
 # SQL MCP Server
 
-一个基于 [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) 的 SQL 数据库服务，让 Claude 等 AI 助手能够通过标准 MCP 协议与 MySQL / SQL Server / PostgreSQL 数据库进行交互，支持执行 SQL 查询和检索数据库 Schema。
+一个基于 [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) 的 SQL 数据库服务，让 Claude 等 AI 助手能够通过标准 MCP 协议与 MySQL / SQL Server / PostgreSQL / SQLite 数据库进行交互，支持执行 SQL 查询和检索数据库 Schema。
 
 ## 功能特性
 
 - **SQL 查询执行**：对数据库执行任意 SELECT 查询（依赖数据库自身权限控制）
 - **Schema 检索**：获取数据库中所有表的结构信息，或查看指定表的列、类型、是否可空等
-- **多数据库支持**：同时配置多个数据库连接（MySQL / SQL Server / PostgreSQL）
+- **多数据库支持**：同时配置多个数据库连接（MySQL / SQL Server / PostgreSQL / SQLite）
 - **多连接管理**：懒加载连接，首次使用时建立；线程安全，支持连接池
 - **跨平台**：Go 编译为原生二进制文件，支持 Windows / Linux / macOS
 
@@ -17,11 +17,12 @@
 | MySQL | 3306 |
 | SQL Server | 1433 |
 | PostgreSQL | 5432 |
+| SQLite | (文件路径) |
 
 ## 前置要求
 
 - Go 1.25+（仅构建时需要）
-- 一个可访问的 MySQL、SQL Server 或 PostgreSQL 数据库
+- 一个可访问的 MySQL、SQL Server、PostgreSQL 或 SQLite 数据库文件
 
 ## 构建
 
@@ -44,6 +45,13 @@ port: 3306
 username: root
 password: your_password
 database: mydb
+```
+
+### SQLite 单数据库模式
+
+```yaml
+type: sqlite
+file: /path/to/mydb.sqlite
 ```
 
 ### 多数据库模式
@@ -71,6 +79,9 @@ connections:
     username: prod_user
     password: prod_pass
     database: prod_db
+  local_db:
+    type: sqlite
+    file: ./data/local.db
 ```
 
 ## 注册到 Claude
@@ -147,6 +158,7 @@ claude mcp add [options] <name> -- <command> [args...]
 │   ├── mysql.go         # MySQL 实现
 │   ├── sqlserver.go     # SQL Server 实现
 │   ├── postgres.go      # PostgreSQL 实现
+│   ├── sqlite.go        # SQLite 实现
 │   └── manager.go       # 连接管理器
 ├── mcp/
 │   └── tools.go         # MCP 工具注册与请求处理
