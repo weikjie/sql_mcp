@@ -16,6 +16,7 @@ type DatabaseConfig struct {
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
 	Database string `yaml:"database"`
+	File     string `yaml:"file,omitempty"`
 }
 
 // Config represents the full application configuration
@@ -27,6 +28,7 @@ type Config struct {
 	Username string `yaml:"username,omitempty"`
 	Password string `yaml:"password,omitempty"`
 	Database string `yaml:"database,omitempty"`
+	File     string `yaml:"file,omitempty"`
 
 	// Multi database mode
 	Connections map[string]DatabaseConfig `yaml:"connections,omitempty"`
@@ -48,6 +50,7 @@ func (c *Config) GetConnections() map[string]DatabaseConfig {
 				Username: c.Username,
 				Password: c.Password,
 				Database: c.Database,
+				File:     c.File,
 			},
 		}
 	}
@@ -90,16 +93,22 @@ func (c *Config) Validate() error {
 		if c.Type == "" {
 			return fmt.Errorf("database type is required")
 		}
-		if c.Host == "" {
-			return fmt.Errorf("host is required")
+		if c.Type == "sqlite" {
+			if c.File == "" {
+				return fmt.Errorf("file path is required for SQLite")
+			}
+		} else {
+			if c.Host == "" {
+				return fmt.Errorf("host is required")
+			}
+			if c.Username == "" {
+				return fmt.Errorf("username is required")
+			}
+			if c.Database == "" {
+				return fmt.Errorf("database name is required")
+			}
 		}
-		if c.Username == "" {
-			return fmt.Errorf("username is required")
-		}
-		if c.Database == "" {
-			return fmt.Errorf("database name is required")
-		}
-		if c.Type != "mysql" && c.Type != "sqlserver" && c.Type != "postgres" {
+		if c.Type != "mysql" && c.Type != "sqlserver" && c.Type != "postgres" && c.Type != "sqlite" {
 			return fmt.Errorf("unsupported database type: %s", c.Type)
 		}
 	} else {
@@ -110,16 +119,22 @@ func (c *Config) Validate() error {
 			if conn.Type == "" {
 				return fmt.Errorf("type is required for connection %s", name)
 			}
-			if conn.Host == "" {
-				return fmt.Errorf("host is required for connection %s", name)
+			if conn.Type == "sqlite" {
+				if conn.File == "" {
+					return fmt.Errorf("file path is required for connection %s", name)
+				}
+			} else {
+				if conn.Host == "" {
+					return fmt.Errorf("host is required for connection %s", name)
+				}
+				if conn.Username == "" {
+					return fmt.Errorf("username is required for connection %s", name)
+				}
+				if conn.Database == "" {
+					return fmt.Errorf("database name is required for connection %s", name)
+				}
 			}
-			if conn.Username == "" {
-				return fmt.Errorf("username is required for connection %s", name)
-			}
-			if conn.Database == "" {
-				return fmt.Errorf("database name is required for connection %s", name)
-			}
-			if conn.Type != "mysql" && conn.Type != "sqlserver" && conn.Type != "postgres" {
+			if conn.Type != "mysql" && conn.Type != "sqlserver" && conn.Type != "postgres" && conn.Type != "sqlite" {
 				return fmt.Errorf("unsupported database type for connection %s: %s", name, conn.Type)
 			}
 		}
@@ -184,6 +199,8 @@ func defaultPort(dbType string) int {
 		return 1433
 	case "postgres":
 		return 5432
+	case "sqlite":
+		return -1
 	default:
 		return 0
 	}

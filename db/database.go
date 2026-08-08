@@ -40,7 +40,7 @@ type Database interface {
 }
 
 // NewDatabase creates a new database instance based on type
-func NewDatabase(dbType, host string, port int, username, password, database string) (Database, error) {
+func NewDatabase(dbType, host string, port int, username, password, database, file string) (Database, error) {
 	switch dbType {
 	case "mysql":
 		return NewMySQLDatabase(host, port, username, password, database), nil
@@ -48,6 +48,8 @@ func NewDatabase(dbType, host string, port int, username, password, database str
 		return NewSQLServerDatabase(host, port, username, password, database), nil
 	case "postgres":
 		return NewPostgresDatabase(host, port, username, password, database), nil
+	case "sqlite":
+		return NewSQLiteDatabase(file), nil
 	default:
 		return nil, fmt.Errorf("unsupported database type: %s", dbType)
 	}
