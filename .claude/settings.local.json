@@ -7,7 +7,10 @@
       "mcp__context7__resolve-library-id",
       "mcp__context7__query-docs",
       "mcp__tavily__tavily_search",
-      "Bash(claude mcp:*)"
+      "Bash(claude mcp:*)",
+      "mcp__sql-mcp__list_connections",
+      "mcp__sql-mcp__get_schema",
+      "mcp__sql-mcp__execute_sql"
     ]
   }
 }
